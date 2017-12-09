@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+       #map {
+        height: 600px;
+        width: 100%;
+       }
+    </style>
+ <script>
+	var map;
+	var infowindow;
+    function initMap() {
+        var middle = {lat:24.185025, lng:120.625557};
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: middle
+        });
+		infowindow = new google.maps.InfoWindow();
+		var request = {
+			location: middle,
+			radius: 2500,
+			keyword: "加油站"
+		};
+		var service = new google.maps.places.PlacesService(map);
+		service.nearbySearch(request, callback);
+		
+		var request2 = {
+			location: middle,
+			radius: 2500,
+			keyword: "郵局"
+		};
+		service.nearbySearch(request2, callback2);
+      }
+	  
+	function callback(results, status) {
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			for (var i = 0; i < results.length; i++) {
+				var place = results[i];
+				createMarker(results[i]);
+			}
+		}
+	}
+	function createMarker(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: map,
+		  icon: 'gas_station.png',
+          position: place.geometry.location
+        });
+		marker.setAnimation(google.maps.Animation.DROP);
+		
+        google.maps.event.addListener(marker, 'mouseover', function() {
+          infowindow.setContent(place.name + "<br>" + place.vicinity);
+          infowindow.open(map, this);
+        });
+      }
+	 function callback2(results, status) {
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			for (var i = 0; i < results.length; i++) {
+				var place = results[i];
+				createMarker2(results[i]);
+			}
+		}
+	}
+	function createMarker2(place) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: map,
+		  icon: 'post_office.png',
+          position: place.geometry.location
+        });
+		marker.setAnimation(google.maps.Animation.DROP);
+		
+        google.maps.event.addListener(marker, 'mouseover', function() {
+          infowindow.setContent(place.name + "<br>" + place.vicinity);
+          infowindow.open(map, this);
+        });
+      }
+    </script>
+	</head>
+	<body>
+		<h3> My Google Maps Demo</h3>
+		<div id="map"></div>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLDHZ3ZlVa6EecpB6mx6RB8wOGE_fNt8Q&libraries=places&callback=initMap" async defer></script>
+	</body>
+</html>
